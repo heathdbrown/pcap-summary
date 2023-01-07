@@ -16,6 +16,7 @@ TCP_RETRANSMISSION = "tcp.analysis.retransmission"
 TCP_URGENT_BIT_SET = "tcp.flags.urg==1"
 TCP_ANALYSIS_FLAGS = "tcp.analysis.flags"
 TCP_WINDOW_SIZE_SCALEFACTOR = "tcp.window_size_scalefactor==-2"
+TCP_BUFFER_FULL = " tcp.window_size == 0 && tcp.flags.reset != 1"
 TLS_CLIENT_HELLO = "tls.handshake.type == 1"
 TLS_SERVER_HELLO = "tls.handshake.type == 2"
 TLS_ENCRYPTED_ALERT = "tls.record.content_type == 21"
@@ -35,6 +36,8 @@ NMAP_USER_AGENT = "http.user_agent contains 'Nmap'"
 NESSUS_FRAME_OFFSET_CONTAINS = "frame[100-199] contains 'nessus'"
 NESSUS_FRAME_OFFSET_MATCHES = "frame[100-199] matches 'nessus'"
 MISC_UNEXPECTED = "tftp || irc || bittorrent"
+MISC_SASSER_WORM = "ls_ads.opnum==0x09"
+UDP_HOME_GROWN = "udp[8:3]==81:60:03"
 
 
 def filter_not_ip_addr(ip_address: str) -> str:
@@ -67,3 +70,11 @@ def filter_tcp_port(port: int) -> str:
 
 def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
     return f"tcp.analysis.ack_rtt>{str(roundtrip)}"
+
+
+def filter_oui(oui: str) -> str:
+    return f"eth.addr[0:3]=={oui}"
+
+
+def filter_sip_to_contains(sip_to: str) -> str:
+    return f"sip.To contains '{sip_to}'"
