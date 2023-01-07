@@ -16,6 +16,18 @@
 pip install pcap-summary
 ```
 
+## Development
+
+- Make sure `hatch` is installed
+
+```console
+# hatch install
+pipx install hatch
+
+# Development shell
+hatch shell
+```
+
 ## License
 
 `pcap-summary` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
