@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 import click
 import pyshark
+import pcap_summary as ps
 
 from ..__about__ import __version__
 
@@ -16,25 +17,12 @@ from ..__about__ import __version__
 @click.argument("file", required=True)
 def pcap_summary(ctx: click.Context, file):
     # click.echo(file)
+    ctx.ensure_object(dict)
+    ctx.obj["file"] = file
     cap = pyshark.FileCapture(file)
     cap.load_packets()
     print(f"File Name: {cap.input_filepath}")
     print(f"Total Number of Packets: {len(cap)}")
-
-
-@pcap_summary.command()
-@click.pass_context
-def dns(ctx):
-    file = ctx.obj["file"]
-    filtered_dns = ps.pyshark_filtered_capture(file, ps.BASIC_DNS)
-    filtered_dns.load_packets()
-
-    filtered_dns.apply_on_packets(ps.print_dns_info)
-
-    filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
-    filtered_dns_response.load_packets()
-
-    ps.print_dns_servers(filtered_dns_response)
 
 
 @pcap_summary.command()

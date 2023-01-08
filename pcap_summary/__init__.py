@@ -1,8 +1,14 @@
 # SPDX-FileCopyrightText: 2022-present U.N. Owen <void@some.where>
 #
 # SPDX-License-Identifier: MIT
+import pyshark
 
 BASIC_TCP = "tcp"
+BASIC_UDP = "udp"
+BASIC_HTTP = "http"
+BASIC_DNS = "dns"
+BASIC_IP = "ip"
+BASIC_IPV6 = "ipv6"
 BASIC_ICMP_ICMPV6 = "icmp || icmpv6"
 BASIC_TLS_HANDSHAKE = "tls.record.content_type == 22"
 BASIC_TLS = "tls"
@@ -21,6 +27,8 @@ TLS_CLIENT_HELLO = "tls.handshake.type == 1"
 TLS_SERVER_HELLO = "tls.handshake.type == 2"
 TLS_ENCRYPTED_ALERT = "tls.record.content_type == 21"
 DNS_PTR = "dns.qry.type == 12"
+DNS_QUERY = "dns.flags.response == 0"
+DNS_RESPONSE = "dns.flags.response == 1"
 DNS_HIGH_ANSWER = "dns.count.answers>10"
 HTTP_PUT_POST = "http.request.method in {PUT POST}"
 HTTP_FILE_EXTENSION = 'http.request.uri matches "\.(exe|zip|jar)$"'
@@ -78,3 +86,13 @@ def filter_oui(oui: str) -> str:
 
 def filter_sip_to_contains(sip_to: str) -> str:
     return f"sip.To contains '{sip_to}'"
+
+
+def pyshark_capture(file: str) -> pyshark.FileCapture:
+    return pyshark.FileCapture(file)
+
+
+def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapture:
+    return pyshark.FileCapture(file, display_filter=display_filter)
+
+
