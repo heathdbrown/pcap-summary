@@ -30,6 +30,9 @@ DNS_PTR = "dns.qry.type == 12"
 DNS_QUERY = "dns.flags.response == 0"
 DNS_RESPONSE = "dns.flags.response == 1"
 DNS_HIGH_ANSWER = "dns.count.answers>10"
+DNS_RESPONSE_IPV6 = "dns.flags.response == 1 && ipv6"
+DNS_IPV6 = "dns && ipv6"
+DNS_IPV4 = "dns && ip"
 HTTP_PUT_POST = "http.request.method in {PUT POST}"
 HTTP_FILE_EXTENSION = 'http.request.uri matches "\.(exe|zip|jar)$"'
 HTTP_CONTENT_TYPE = 'http.content_type contains "application"'
@@ -96,3 +99,52 @@ def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapt
     return pyshark.FileCapture(file, display_filter=display_filter)
 
 
+def print_dns_info_v4(pkt):
+    if pkt.dns.qry_name:
+        print(f"DNS request from {pkt.ip.src} : {pkt.dns.qry_name}")
+    elif pkt.dns.resp_name:
+        print(f"DNS Response from {pkt.ip.src}: {pkt.dns.resp_name}")
+
+
+def print_dns_info_v6(pkt):
+    if pkt.dns.qry_name:
+        print(f"DNS request from {pkt.ipv6.src}: {pkt.dns.qry_name}")
+    elif pkt.dns.resp_name:
+        print(f"DNS response from {pkt.ipv6.src}: {pkt.dns.resp_name}")
+
+
+def ip_src(pkt) -> str:
+    return pkt.ip.src
+
+
+def ipv6_src(pkt) -> str:
+    return pkt.ipv6.src
+
+
+def dns_servers_from_capture(
+    capture: pyshark.FileCapture, ip_version: int = 4
+) -> set[str]:
+    if ip_version == 4:
+        return set([ip_src(packet) for packet in capture])
+    if ip_version == 6:
+        return set([ipv6_src(packet) for packet in capture])
+
+
+def dns_servers_from_capture_v4(capture: pyshark.FileCapture) -> set[str]:
+    return set([ip_src(packet) for packet in capture])
+
+
+def dns_servers_from_capture_v6(capture: pyshark.FileCapture) -> set[str]:
+    return set([ipv6_src(packet) for packet in capture])
+
+
+def print_dns_servers_v4(capture: pyshark.FileCapture):
+    print("DNS Servers:")
+    for server in dns_servers_from_capture_v4(capture):
+        print("\t - " + server)
+
+
+def print_dns_servers_v6(capture: pyshark.FileCapture):
+    print("DNS Servers:")
+    for server in dns_servers_from_capture_v6(capture):
+        print("\t - " + server)
