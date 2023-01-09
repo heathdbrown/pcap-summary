@@ -34,6 +34,9 @@ DNS_PTR = "dns.qry.type == 12"
 DNS_QUERY = "dns.flags.response == 0"
 DNS_RESPONSE = "dns.flags.response == 1"
 DNS_HIGH_ANSWER = "dns.count.answers>10"
+DNS_RESPONSE_IPV6 = "dns.flags.response == 1 && ipv6"
+DNS_IPV6 = "dns && ipv6"
+DNS_IPV4 = "dns && ip"
 HTTP_PUT_POST = "http.request.method in {PUT POST}"
 HTTP_FILE_EXTENSION = 'http.request.uri matches "\.(exe|zip|jar)$"'
 HTTP_CONTENT_TYPE = 'http.content_type contains "application"'
