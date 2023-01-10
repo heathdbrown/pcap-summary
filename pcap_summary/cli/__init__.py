@@ -33,24 +33,10 @@ def dns(ctx):
     filtered_dns.load_packets()
 
     if len(filtered_dns) > 0:
-
-        filtered_ipv6 = ps.pyshark_filtered_capture(file, ps.BASIC_IPV6)
-        filtered_ipv6.load_packets()
-
-        if len(filtered_ipv6) > 0:
-            filtered_dns_ipv6 = ps.pyshark_filtered_capture(file, ps.DNS_IPV6)
-            filtered_dns_ipv6.apply_on_packets(ps.print_dns_info_v6)
-
-            filtered_dns_response_ipv6 = ps.pyshark_filtered_capture(
-                file, ps.DNS_RESPONSE_IPV6
-            )
-            ps.print_dns_servers_v6(filtered_dns_response_ipv6)
-        else:
-            filtered_dns_ipv4 = ps.pyshark_filtered_capture(file, ps.DNS_IPV4)
-            filtered_dns_ipv4.apply_on_packets(ps.print_dns_info_v4)
-
-            filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
-            ps.print_dns_servers_v4(filtered_dns_response)
+        filtered_dns.apply_on_packets(ps.print_dns_info)
+        filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
+        filtered_dns_response.load_packets()
+        ps.print_dns_server(filtered_dns_response)
     else:
         print("No DNS packets found")
 
