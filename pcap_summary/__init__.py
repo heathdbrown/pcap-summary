@@ -210,3 +210,26 @@ def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapt
       pyshark.FileCapture (object): pyshark.FileCapture object returned
     """
     return pyshark.FileCapture(file, display_filter=display_filter)
+
+
+def print_dns_info(pkt):
+    if pkt.dns.qry_name:
+        print(f"DNS request from {ip_src(pkt)} : {pkt.dns.qry_name}")
+    elif pkt.dns.resp_name:
+        print(f"DNS Response from {ip_src(pkt)}: {pkt.dns.resp_name}")
+
+
+def ip_src(pkt) -> str:
+    if "IPV6" not in str(pkt.layers):
+        return pkt.ip.src
+    return pkt.ipv6.src
+
+
+def dns_servers_from_capture(capture: pyshark.FileCapture) -> set[str]:
+    return set([ip_src(packet) for packet in capture])
+
+
+def print_dns_server(capture: pyshark.FileCapture):
+    print("DNS Servers:")
+    for server in dns_servers_from_capture(capture):
+        print("\t - " + server)
