@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2022-present Heath Brown <heathd.brown@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-# CLI to analyze packet captures via pyshark and produce summaries with common filters
+""" CLI to analyze packet captures via pyshark and produce summaries with common filters """
 import click
 import pyshark
 import pcap_summary as ps
@@ -25,6 +25,23 @@ def pcap_summary(ctx: click.Context, file):
     cap.load_packets()
     print(f"File Name: {cap.input_filepath}")
     print(f"Total Number of Packets: {len(cap)}")
+
+
+@pcap_summary.command()
+@click.pass_context
+def dns(ctx):
+    """Print DNS information from packet capture"""
+    file = ctx.obj["file"]
+    filtered_dns = ps.pyshark_filtered_capture(file, ps.BASIC_DNS)
+    filtered_dns.load_packets()
+
+    if len(filtered_dns) > 0:
+        filtered_dns.apply_on_packets(ps.print_dns_info)
+        filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
+        filtered_dns_response.load_packets()
+        ps.print_dns_server(filtered_dns_response)
+    else:
+        print("No DNS packets found")
 
 
 @pcap_summary.command()
