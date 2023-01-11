@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2022-present Heath Brown <heathd.brown@gmail.com>
 #
 # SPDX-License-Identifier: MIT
-# CLI to analyze packet captures via pyshark and produce summaries with common filters
+""" CLI to analyze packet captures via pyshark and produce summaries with common filters """
 import click
 import pyshark
 import pcap_summary as ps
