@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: 2022-present U.N. Owen <void@some.where>
+# SPDX-FileCopyrightText: 2022-present Heath Brown <heathd.brown@gmail.com>
 #
 # SPDX-License-Identifier: MIT
+# CLI to analyze packet captures via pyshark and produce summaries with common filters
 import click
 import pyshark
 import pcap_summary as ps
@@ -16,6 +17,7 @@ from ..__about__ import __version__
 @click.pass_context
 @click.argument("file", required=True)
 def pcap_summary(ctx: click.Context, file):
+    """Print name and total number of packets for capture file"""
     # click.echo(file)
     ctx.ensure_object(dict)
     ctx.obj["file"] = file
@@ -28,6 +30,7 @@ def pcap_summary(ctx: click.Context, file):
 @pcap_summary.command()
 @click.pass_context
 def summary(ctx):
+    """Give a summary of protocols to view which area to review in the capture"""
     file = ctx.obj["file"]
     filtered_tcp = ps.pyshark_filtered_capture(file, ps.BASIC_TCP)
     filtered_tcp.load_packets()
@@ -208,4 +211,5 @@ def summary(ctx):
 
 
 if __name__ == "__main__":
+    # click allows for passing a context object, we need to pass an object that is a blank dict
     pcap_summary(obj={})
