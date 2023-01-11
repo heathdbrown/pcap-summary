@@ -1,8 +1,12 @@
-# SPDX-FileCopyrightText: 2022-present U.N. Owen <void@some.where>
+# SPDX-FileCopyrightText: 2022-present Heath Brown <heathd.brown@gmail.com>
 #
 # SPDX-License-Identifier: MIT
+"""Module contains common wireshark filters and methods to apply those filters.
+  In addition to wrappers around common pyshark.FileCapture fucntions to simplify application of filters."""
+
 import pyshark
 
+# Wireshark display_filters
 BASIC_TCP = "tcp"
 BASIC_UDP = "udp"
 BASIC_HTTP = "http"
@@ -49,50 +53,157 @@ UDP_HOME_GROWN = "udp[8:3]==81:60:03"
 
 
 def filter_not_ip_addr(ip_address: str) -> str:
+    """Return a filter for removing a specific iP Address
+
+    Param:
+      ip_address (str): IP Address to ignore from display filter
+
+    Returns:
+      display_filter (str): Wireshark display filter that removes a specified IP Address string.
+
+    """
     return f"!ip.addr=='{ip_address}"
 
 
 def filter_ip_addr(ip_address: str) -> str:
+    """Return a filter for include a specific iP Address
+
+    Param:
+      ip_address (str): IP Address to include from display filter
+
+    Returns:
+      display_filter (str): Wireshark display filter for a specified IP Address string.
+
+    """
     return f"ip.addr=='{ip_address}'"
 
 
 def filter_tls_server_name(servername: str) -> str:
+    """Return a filter for including a specific server name in a TLS packet
+
+    Param:
+      server_name (str): Server Name to search for in a TLS packet extension
+
+    Returns:
+      display_filter (str): Wireshark display filter that includes a specified TLS extension server_name string.
+
+    """
     return f"tls.handshake.extensions_server_name contains '{servername}'"
 
 
 def filter_bad_dns_server(ip_address: str) -> str:
+    """Return a filter for traffic that should not be destined for a DNS server:
+
+    Param:
+      ip_address (str): IP Address of a DNS Server
+
+    Returns:
+      display_filter (str): Wireshark display filter that shows non-DNS traffic for a specified IP Address string.
+
+    """
     return f"ip.dst=='{ip_address}' && !udp.port==53 && !tcp.port==53"
 
 
 def filter_tcp_window_size(win_size: int) -> str:
+    """Return a filter for a specific TCP Windows Size.
+
+    Param:
+      win_size (int): TCP Windows Size to review
+
+    Returns:
+      display_filter (str): Wireshark display filter looking for specified TCP Window Size.
+
+    """
     return f"tcp.window_size<{str(win_size)}"
 
 
 def filter_tcp_stream(stream: int) -> str:
+    """Return a filter for filtering a specific TCP stream id
+
+    Param:
+      stream (int): TCP Stream id to filter
+
+    Returns:
+      display_filter (str): Wireshark display filter for the specified TCP Stream Id.
+
+    """
     return f"tcp.stream=={str(stream)}"
 
 
 def filter_tcp_port(port: int) -> str:
+    """Return a filter for a specific TCP Port
+
+    Param:
+      port (int): TCP Port to filter
+
+    Returns:
+      display_filter (str): Wireshark display filter that includes a specified TCP Port.
+
+    """
     return f"tcp.port=={str(port)}"
 
 
 def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
+    """Return a filter for a specitific TCP Round Trip Time value.
+
+    Param:
+      roundtrip (int): TCP Round Trip Time Value to filter.
+
+    Returns:
+      display_filter (str): Wireshark display filter that looks for a specified TCP RTT value.
+
+    """
     return f"tcp.analysis.ack_rtt>{str(roundtrip)}"
 
 
 def filter_oui(oui: str) -> str:
+    """Return a filter for removing a specific iP Address
+
+    Param:
+      ip_address (str): IP Address to ignore from display filter
+
+    Returns:
+      display_filter (str): Wireshark display filter that removes a specified IP Address string.
+
+    """
     return f"eth.addr[0:3]=={oui}"
 
 
 def filter_sip_to_contains(sip_to: str) -> str:
+    """Return a filter for specific SIP String
+
+    Param:
+      sip_to (str): SIP To value that should be filtered
+
+    Returns:
+      display_filter (str): Wireshark display filter that includes a specified SIP_TO value.
+
+    """
     return f"sip.To contains '{sip_to}'"
 
 
 def pyshark_capture(file: str) -> pyshark.FileCapture:
+    """generic wrapper on pyshark.FileCapture
+
+    Param:
+      file (str): File path to a valid capture file format
+
+    Returns:
+      pyshark.FileCapture (object): pyshark.FileCapture object returned
+
+    """
     return pyshark.FileCapture(file)
 
 
 def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapture:
+    """Generic wrapper on pyshark.FileCapture, allowing for display_filter
+
+    Param:
+      file (str): File path to a valid capture file format
+
+      display_filter (str): Wireshark display filter to apply to specified file capture.
+
+    Returns:
+      pyshark.FileCapture (object): pyshark.FileCapture object returned
+    """
     return pyshark.FileCapture(file, display_filter=display_filter)
-
-
