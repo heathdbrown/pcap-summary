@@ -30,6 +30,7 @@ def pcap_summary(ctx: click.Context, file):
 @pcap_summary.command()
 @click.pass_context
 def dns(ctx):
+    """Print DNS information from packet capture"""
     file = ctx.obj["file"]
     filtered_dns = ps.pyshark_filtered_capture(file, ps.BASIC_DNS)
     filtered_dns.load_packets()
