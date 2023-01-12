@@ -369,3 +369,39 @@ def http_analysis(file: str, summary: bool = True) -> None:
             filtered_nmap_user_agent.load_packets()
             print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
 
+
+def tls_analysis(file: str, summary: bool = True) -> None:
+    """Analyze TLS traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_tls = pyshark_filtered_capture(file, BASIC_TLS)
+
+    if not has_packets(filtered_tls):
+        print("No TLS packets found")
+
+    if has_packets(filtered_tls):
+        if summary:
+            print(f"TLS Packets: {len(filtered_tls)}")
+
+            filtered_tls_handshake = pyshark_filtered_capture(file, BASIC_TLS_HANDSHAKE)
+            filtered_tls_handshake.load_packets()
+            print(f"TLS Handshake Packets: {len(filtered_tls_handshake)}")
+
+            filtered_tls_client_hello = pyshark_filtered_capture(file, TLS_CLIENT_HELLO)
+            filtered_tls_client_hello.load_packets()
+            print(f"TLS Client Hello Packets: {len(filtered_tls_client_hello)}")
+
+            filtered_tls_server_hello = pyshark_filtered_capture(file, TLS_SERVER_HELLO)
+            filtered_tls_server_hello.load_packets()
+            print(f"TLS Server Hello Packets: {len(filtered_tls_server_hello)}")
+
+            filtered_encrypted_alert = pyshark_filtered_capture(
+                file, TLS_ENCRYPTED_ALERT
+            )
+            filtered_encrypted_alert.load_packets()
+            print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
+
+
