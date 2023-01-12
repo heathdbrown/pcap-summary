@@ -430,3 +430,100 @@ def tls_analysis(file: str, summary: bool = True) -> None:
             print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
 
 
+def tcp_analysis(file: str, summary: bool = True) -> None:
+    """Analyze TCP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_tcp = pyshark_filtered_capture(file, BASIC_TCP)
+
+    if not has_packets(filtered_tcp):
+        print("No TCP packets found")
+
+    if has_packets(filtered_tcp):
+        if summary:
+            print(f"TCP Packets: {len(filtered_tcp)}")
+
+            filtered_tcp_analysis_flag = pyshark_filtered_capture(
+                file, TCP_ANALYSIS_FLAGS
+            )
+            filtered_tcp_analysis_flag.load_packets()
+            print(f"TCP Packets with Analysis Flags: {len(filtered_tcp_analysis_flag)}")
+
+            filtered_tcp_analysis_retransmissions = pyshark_filtered_capture(
+                file, TCP_RETRANSMISSION
+            )
+            filtered_tcp_analysis_retransmissions.load_packets()
+            print(
+                f"TCP Packets with Retransmissions: {len(filtered_tcp_analysis_retransmissions)}"
+            )
+
+            filtered_syn = pyshark_filtered_capture(file, TCP_SYN)
+            filtered_syn.load_packets()
+            print(f"TCP SYN Packets: {len(filtered_syn)}")
+
+            filtered_syn_ack = pyshark_filtered_capture(file, TCP_SYN_ACK)
+            filtered_syn_ack.load_packets()
+            print(f"TCP SYN ACK Packets: {len(filtered_syn_ack)}")
+
+            filtered_syn_non_zero_ack = pyshark_filtered_capture(
+                file, TCP_SYN_NON_ZERO_ACK
+            )
+            filtered_syn_non_zero_ack.load_packets()
+            print(f"TCP SYN Non Zero ACK Packets: {len(filtered_syn_non_zero_ack)}")
+
+            filtered_conn_refusal = pyshark_filtered_capture(file, TCP_CONN_REFUSAL)
+            filtered_conn_refusal.load_packets()
+            print(f"TCP Connection Refused Packets: {len(filtered_conn_refusal)}")
+
+            filtered_data_in_urgent = pyshark_filtered_capture(file, TCP_DATA_IN_URGET)
+            filtered_data_in_urgent.load_packets()
+            print(f"TCP Data in Urgent Packets: {len(filtered_data_in_urgent)}")
+
+            filtered_resets = pyshark_filtered_capture(file, TCP_RESETS)
+            filtered_resets.load_packets()
+            print(f"TCP Reset Packets: {len(filtered_resets)}")
+
+            filtered_urgent_bit_set = pyshark_filtered_capture(file, TCP_URGENT_BIT_SET)
+            filtered_urgent_bit_set.load_packets()
+            print(f"TCP Urgent Bit Set Packets: {len(filtered_urgent_bit_set)}")
+
+            filtered_window_size_scalefactor = pyshark_filtered_capture(
+                file, TCP_WINDOW_SIZE_SCALEFACTOR
+            )
+            filtered_window_size_scalefactor.load_packets()
+            print(
+                f"TCP Window Size ScaleFactor Packets: {len(filtered_window_size_scalefactor)}"
+            )
+
+            filtered_buff_full = pyshark_filtered_capture(file, TCP_BUFFER_FULL)
+            filtered_buff_full.load_packets()
+            print(f"TCP Buffer Full Packets: {len(filtered_buff_full)}")
+
+            http_analysis(file)
+            tls_analysis(file)
+
+
+def udp_analysis(file: str, summary: bool = True) -> None:
+    """Analyze UDP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_udp = pyshark_filtered_capture(file, BASIC_UDP)
+
+    if not has_packets(filtered_udp):
+        print("No UDP packets found")
+
+    if has_packets(filtered_udp):
+        if summary:
+            print(f"UDP Packets: {len(filtered_udp)}")
+
+            filtered_udp_home_grown = pyshark_filtered_capture(file, UDP_HOME_GROWN)
+            filtered_udp_home_grown.load_packets()
+            print(f"UDP Home Grown Packets: {len(filtered_udp_home_grown)}")
+
+            dns_analysis(file)
