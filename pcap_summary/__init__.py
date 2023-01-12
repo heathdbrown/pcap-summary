@@ -319,3 +319,53 @@ def dns_analysis(file: str, summary: bool = True) -> None:
             filtered_dns_response = pyshark_filtered_capture(file, DNS_RESPONSE)
             filtered_dns_response.load_packets()
             print_dns_server(filtered_dns_response)
+
+
+def http_analysis(file: str, summary: bool = True) -> None:
+    """Analyze HTTP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_http = pyshark_filtered_capture(file, BASIC_HTTP)
+
+    if not has_packets(filtered_http):
+        print("No HTTP packets found")
+
+    if has_packets(filtered_http):
+        if summary:
+            print(f"HTTP Packets: {len(filtered_http)}")
+
+            filtered_http_put_post = pyshark_filtered_capture(file, HTTP_PUT_POST)
+            filtered_http_put_post.load_packets()
+            print(f"HTTP Packets with Put or POST: {len(filtered_http_put_post)}")
+
+            filtered_file_extension = pyshark_filtered_capture(
+                file, HTTP_FILE_EXTENSION
+            )
+            filtered_file_extension.load_packets()
+            print(
+                f"HTTP Packets with exe, zip extensions: {len(filtered_file_extension)}"
+            )
+
+            filtered_content_type = pyshark_filtered_capture(file, HTTP_CONTENT_TYPE)
+            filtered_content_type.load_packets()
+            print(f"HTTP Packets with content type: {len(filtered_content_type)}")
+
+            filtered_redirects = pyshark_filtered_capture(file, HTTP_REDIRECTS)
+            filtered_redirects.load_packets()
+            print(f"HTTP Packets with redirects: {len(filtered_redirects)}")
+
+            filtered_http_get_not_on_80 = pyshark_filtered_capture(
+                file, HTTP_GET_NOT_ON_80
+            )
+            filtered_http_get_not_on_80.load_packets()
+            print(
+                f"HTTP Packets with non standard ports: {len(filtered_http_get_not_on_80)}"
+            )
+
+            filtered_nmap_user_agent = pyshark_filtered_capture(file, NMAP_USER_AGENT)
+            filtered_nmap_user_agent.load_packets()
+            print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
+
