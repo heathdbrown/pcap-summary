@@ -305,3 +305,42 @@ def has_packets(capture: pyshark.FileCapture) -> bool:
     if not len(capture) > 0:
         return False
     return True
+
+
+def dns_analysis(file: str, summary: bool = True) -> None:
+    """Analyze DNS traffic and print findings
+
+    Param:
+      file (str): Path to capture file
+      summary (bool): Summarize or provide details
+    """
+    filtered_dns = pyshark_filtered_capture(file, BASIC_DNS)
+
+    if not has_packets(filtered_dns):
+        print("No DNS packets found")
+
+    if has_packets(filtered_dns):
+        if summary:
+            print(f"DNS Packets: {len(filtered_dns)}")
+
+            filtered_dns_ptr = pyshark_filtered_capture(file, DNS_PTR)
+            filtered_dns_ptr.load_packets()
+            print(f"DNS PTR Packets: {len(filtered_dns_ptr)}")
+
+            filtered_dns_query = pyshark_filtered_capture(file, DNS_QUERY)
+            filtered_dns_query.load_packets()
+            print(f"DNS Query Packets: {len(filtered_dns_query)}")
+
+            filtered_dns_response = pyshark_filtered_capture(file, DNS_RESPONSE)
+            filtered_dns_response.load_packets()
+            print(f"DNS Response Packets: {len(filtered_dns_response)}")
+
+            filtered_dns_high_answer = pyshark_filtered_capture(file, DNS_HIGH_ANSWER)
+            filtered_dns_high_answer.load_packets()
+            print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
+
+        if not summary:
+            filtered_dns.apply_on_packets(print_dns_info)
+            filtered_dns_response = pyshark_filtered_capture(file, DNS_RESPONSE)
+            filtered_dns_response.load_packets()
+            print_dns_server(filtered_dns_response)
