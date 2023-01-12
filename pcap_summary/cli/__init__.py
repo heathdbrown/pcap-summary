@@ -32,16 +32,7 @@ def pcap_summary(ctx: click.Context, file):
 def dns(ctx):
     """Print DNS information from packet capture"""
     file = ctx.obj["file"]
-    filtered_dns = ps.pyshark_filtered_capture(file, ps.BASIC_DNS)
-    filtered_dns.load_packets()
-
-    if len(filtered_dns) > 0:
-        filtered_dns.apply_on_packets(ps.print_dns_info)
-        filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
-        filtered_dns_response.load_packets()
-        ps.print_dns_server(filtered_dns_response)
-    else:
-        print("No DNS packets found")
+    ps.dns_analysis(file, summary=False)
 
 
 @pcap_summary.command()
@@ -205,29 +196,7 @@ def summary(ctx):
         filtered_udp_home_grown.load_packets()
         print(f"UDP Home Grown Packets: {len(filtered_udp_home_grown)}")
 
-        filtered_dns = ps.pyshark_filtered_capture(file, ps.BASIC_DNS)
-        filtered_dns.load_packets()
-        if len(filtered_dns) > 0:
-            filtered_dns_ptr = ps.pyshark_filtered_capture(file, ps.DNS_PTR)
-            filtered_dns_ptr.load_packets()
-            print(f"DNS PTR Packets: {len(filtered_dns_ptr)}")
-
-            filtered_dns_query = ps.pyshark_filtered_capture(file, ps.DNS_QUERY)
-            filtered_dns_query.load_packets()
-            print(f"DNS Query Packets: {len(filtered_dns_query)}")
-
-            filtered_dns_response = ps.pyshark_filtered_capture(file, ps.DNS_RESPONSE)
-            filtered_dns_response.load_packets()
-            print(f"DNS Response Packets: {len(filtered_dns_response)}")
-
-            filtered_dns_high_answer = ps.pyshark_filtered_capture(
-                file, ps.DNS_HIGH_ANSWER
-            )
-            filtered_dns_high_answer.load_packets()
-            print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
-
-    else:
-        print("No UDP Packets")
+        ps.dns_analysis(file)
 
 
 if __name__ == "__main__":
