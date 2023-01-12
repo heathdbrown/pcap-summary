@@ -50,12 +50,11 @@ def summary(ctx):
     """Give a summary of protocols to view which area to review in the capture"""
     file = ctx.obj["file"]
     filtered_tcp = ps.pyshark_filtered_capture(file, ps.BASIC_TCP)
-    filtered_tcp.load_packets()
 
-    filtered_http = ps.pyshark_filtered_capture(file, ps.BASIC_HTTP)
-    filtered_http.load_packets()
+    if not ps.has_packets(filtered_tcp):
+        print("No TCP packets found")
 
-    if len(filtered_tcp) > 0:
+    if ps.has_packets(filtered_tcp):
         print(f"TCP Packets: {len(filtered_tcp)}")
 
         filtered_tcp_analysis_flag = ps.pyshark_filtered_capture(
@@ -118,7 +117,12 @@ def summary(ctx):
         filtered_buff_full.load_packets()
         print(f"TCP Buffer Full Packets: {len(filtered_buff_full)}")
 
-        if len(filtered_http) > 0:
+        filtered_http = ps.pyshark_filtered_capture(file, ps.BASIC_HTTP)
+
+        if not ps.has_packets(filtered_http):
+            print("No HTTP packets found")
+
+        if ps.has_packets(filtered_http):
             print(f"HTTP Packets: {len(filtered_http)}")
 
             filtered_http_put_post = ps.pyshark_filtered_capture(file, ps.HTTP_PUT_POST)
@@ -157,12 +161,12 @@ def summary(ctx):
             filtered_nmap_user_agent.load_packets()
             print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
 
-        else:
-            print("No HTTP Packets")
-
         filtered_tls = ps.pyshark_filtered_capture(file, ps.BASIC_TLS)
-        filtered_tls.load_packets()
-        if len(filtered_tls) > 0:
+
+        if not ps.has_packets(filtered_tls):
+            print("No TLS packets found")
+
+        if ps.has_packets(filtered_tls):
             print(f"TLS Packets: {len(filtered_tls)}")
 
             filtered_tls_handshake = ps.pyshark_filtered_capture(
@@ -188,14 +192,13 @@ def summary(ctx):
             )
             filtered_encrypted_alert.load_packets()
             print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
-        else:
-            print("No TLS Packets found")
-    else:
-        print("No TCP Packets")
 
     filtered_udp = ps.pyshark_filtered_capture(file, ps.BASIC_UDP)
-    filtered_udp.load_packets()
-    if len(filtered_udp) > 0:
+
+    if not ps.has_packets(filtered_udp):
+        print("No UDP packets found")
+
+    if ps.has_packets(filtered_udp):
         print(f"UDP Packets: {len(filtered_udp)}")
 
         filtered_udp_home_grown = ps.pyshark_filtered_capture(file, ps.UDP_HOME_GROWN)

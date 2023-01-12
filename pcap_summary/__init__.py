@@ -290,3 +290,18 @@ def print_dns_server(capture: pyshark.FileCapture):
     print("DNS Servers:")
     for server in dns_servers_from_capture(capture):
         print("\t - " + server)
+
+
+def has_packets(capture: pyshark.FileCapture) -> bool:
+    """Review if capture length is greater than zero
+
+    Param:
+      capture (pyshark.FileCapture): Pyshark FileCapture object
+
+    Return:
+      bool
+    """
+    capture.load_packets()
+    if not len(capture) > 0:
+        return False
+    return True
