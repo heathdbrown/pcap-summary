@@ -62,7 +62,7 @@ UDP_HOME_GROWN = "udp[8:3]==81:60:03"
 def filter_not_ip_addr(ip_address: str) -> str:
     """Return a filter for removing a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to ignore from display filter
 
     Returns:
@@ -75,7 +75,7 @@ def filter_not_ip_addr(ip_address: str) -> str:
 def filter_ip_addr(ip_address: str) -> str:
     """Return a filter for include a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to include from display filter
 
     Returns:
@@ -88,7 +88,7 @@ def filter_ip_addr(ip_address: str) -> str:
 def filter_tls_server_name(servername: str) -> str:
     """Return a filter for including a specific server name in a TLS packet
 
-    Param:
+    Args:
       server_name (str): Server Name to search for in a TLS packet extension
 
     Returns:
@@ -101,7 +101,7 @@ def filter_tls_server_name(servername: str) -> str:
 def filter_bad_dns_server(ip_address: str) -> str:
     """Return a filter for traffic that should not be destined for a DNS server:
 
-    Param:
+    Args:
       ip_address (str): IP Address of a DNS Server
 
     Returns:
@@ -114,7 +114,7 @@ def filter_bad_dns_server(ip_address: str) -> str:
 def filter_tcp_window_size(win_size: int) -> str:
     """Return a filter for a specific TCP Windows Size.
 
-    Param:
+    Args:
       win_size (int): TCP Windows Size to review
 
     Returns:
@@ -127,7 +127,7 @@ def filter_tcp_window_size(win_size: int) -> str:
 def filter_tcp_stream(stream: int) -> str:
     """Return a filter for filtering a specific TCP stream id
 
-    Param:
+    Args:
       stream (int): TCP Stream id to filter
 
     Returns:
@@ -140,7 +140,7 @@ def filter_tcp_stream(stream: int) -> str:
 def filter_tcp_port(port: int) -> str:
     """Return a filter for a specific TCP Port
 
-    Param:
+    Args:
       port (int): TCP Port to filter
 
     Returns:
@@ -153,7 +153,7 @@ def filter_tcp_port(port: int) -> str:
 def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
     """Return a filter for a specitific TCP Round Trip Time value.
 
-    Param:
+    Args:
       roundtrip (int): TCP Round Trip Time Value to filter.
 
     Returns:
@@ -166,7 +166,7 @@ def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
 def filter_oui(oui: str) -> str:
     """Return a filter for removing a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to ignore from display filter
 
     Returns:
@@ -179,7 +179,7 @@ def filter_oui(oui: str) -> str:
 def filter_sip_to_contains(sip_to: str) -> str:
     """Return a filter for specific SIP String
 
-    Param:
+    Args:
       sip_to (str): SIP To value that should be filtered
 
     Returns:
@@ -209,7 +209,7 @@ def valid_filename(file: str) -> bool:
 def pyshark_capture(file: str) -> pyshark.FileCapture:
     """generic wrapper on pyshark.FileCapture
 
-    Param:
+    Args:
       file (str): File path to a valid capture file format
 
     Returns:
@@ -224,7 +224,7 @@ def pyshark_capture(file: str) -> pyshark.FileCapture:
 def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapture:
     """Generic wrapper on pyshark.FileCapture, allowing for display_filter
 
-    Param:
+    Args:
       file (str): File path to a valid capture file format
 
       display_filter (str): Wireshark display filter to apply to specified file capture.
@@ -240,7 +240,7 @@ def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapt
 def print_dns_info(pkt):
     """Print DNS conversation Information from packet
 
-    Param:
+    Args:
       pkt (object): Pyshark FileCapture packet object
 
     Returns:
@@ -255,7 +255,7 @@ def print_dns_info(pkt):
 def ip_src(pkt) -> str:
     """Extract IP Source information from packet
 
-    Param:
+    Args:
       pkt (object): Pyshark FileCapture packet object
 
     Returns:
@@ -269,7 +269,7 @@ def ip_src(pkt) -> str:
 def dns_servers_from_capture(capture: pyshark.FileCapture) -> set[str]:
     """Return DNS servers that send a response from capture
 
-    Param:
+    Args:
       capture (pyshark.FileCapture): Pyshark FileCapture packet object
 
     Returns:
@@ -281,7 +281,7 @@ def dns_servers_from_capture(capture: pyshark.FileCapture) -> set[str]:
 def print_dns_server(capture: pyshark.FileCapture):
     """Print DNS Servers from capture
 
-    Param:
+    Args:
       capture (pyshark.FileCapture): Pyshark FileCapture packet object
 
     Returns:
@@ -290,3 +290,240 @@ def print_dns_server(capture: pyshark.FileCapture):
     print("DNS Servers:")
     for server in dns_servers_from_capture(capture):
         print("\t - " + server)
+
+
+def has_packets(capture: pyshark.FileCapture) -> bool:
+    """Review if capture length is greater than zero
+
+    Args:
+      capture (pyshark.FileCapture): Pyshark FileCapture object
+
+    Return:
+      bool
+    """
+    capture.load_packets()
+    if not len(capture) > 0:
+        return False
+    return True
+
+
+def dns_analysis(file: str, summary: bool = True) -> None:
+    """Analyze DNS traffic and print findings
+
+    Args:
+      file (str): Path to capture file
+      summary (bool): Summarize or provide details
+    """
+    filtered_dns = pyshark_filtered_capture(file, BASIC_DNS)
+
+    if not has_packets(filtered_dns):
+        print("No DNS packets found")
+
+    if has_packets(filtered_dns):
+        if summary:
+            print(f"DNS Packets: {len(filtered_dns)}")
+
+            filtered_dns_ptr = pyshark_filtered_capture(file, DNS_PTR)
+            filtered_dns_ptr.load_packets()
+            print(f"DNS PTR Packets: {len(filtered_dns_ptr)}")
+
+            filtered_dns_query = pyshark_filtered_capture(file, DNS_QUERY)
+            filtered_dns_query.load_packets()
+            print(f"DNS Query Packets: {len(filtered_dns_query)}")
+
+            filtered_dns_response = pyshark_filtered_capture(file, DNS_RESPONSE)
+            filtered_dns_response.load_packets()
+            print(f"DNS Response Packets: {len(filtered_dns_response)}")
+
+            filtered_dns_high_answer = pyshark_filtered_capture(file, DNS_HIGH_ANSWER)
+            filtered_dns_high_answer.load_packets()
+            print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
+
+        if not summary:
+            filtered_dns.apply_on_packets(print_dns_info)
+            filtered_dns_response = pyshark_filtered_capture(file, DNS_RESPONSE)
+            filtered_dns_response.load_packets()
+            print_dns_server(filtered_dns_response)
+
+
+def http_analysis(file: str, summary: bool = True) -> None:
+    """Analyze HTTP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_http = pyshark_filtered_capture(file, BASIC_HTTP)
+
+    if not has_packets(filtered_http):
+        print("No HTTP packets found")
+
+    if has_packets(filtered_http):
+        if summary:
+            print(f"HTTP Packets: {len(filtered_http)}")
+
+            filtered_http_put_post = pyshark_filtered_capture(file, HTTP_PUT_POST)
+            filtered_http_put_post.load_packets()
+            print(f"HTTP Packets with Put or POST: {len(filtered_http_put_post)}")
+
+            filtered_file_extension = pyshark_filtered_capture(
+                file, HTTP_FILE_EXTENSION
+            )
+            filtered_file_extension.load_packets()
+            print(
+                f"HTTP Packets with exe, zip extensions: {len(filtered_file_extension)}"
+            )
+
+            filtered_content_type = pyshark_filtered_capture(file, HTTP_CONTENT_TYPE)
+            filtered_content_type.load_packets()
+            print(f"HTTP Packets with content type: {len(filtered_content_type)}")
+
+            filtered_redirects = pyshark_filtered_capture(file, HTTP_REDIRECTS)
+            filtered_redirects.load_packets()
+            print(f"HTTP Packets with redirects: {len(filtered_redirects)}")
+
+            filtered_http_get_not_on_80 = pyshark_filtered_capture(
+                file, HTTP_GET_NOT_ON_80
+            )
+            filtered_http_get_not_on_80.load_packets()
+            print(
+                f"HTTP Packets with non standard ports: {len(filtered_http_get_not_on_80)}"
+            )
+
+            filtered_nmap_user_agent = pyshark_filtered_capture(file, NMAP_USER_AGENT)
+            filtered_nmap_user_agent.load_packets()
+            print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
+
+
+def tls_analysis(file: str, summary: bool = True) -> None:
+    """Analyze TLS traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_tls = pyshark_filtered_capture(file, BASIC_TLS)
+
+    if not has_packets(filtered_tls):
+        print("No TLS packets found")
+
+    if has_packets(filtered_tls):
+        if summary:
+            print(f"TLS Packets: {len(filtered_tls)}")
+
+            filtered_tls_handshake = pyshark_filtered_capture(file, BASIC_TLS_HANDSHAKE)
+            filtered_tls_handshake.load_packets()
+            print(f"TLS Handshake Packets: {len(filtered_tls_handshake)}")
+
+            filtered_tls_client_hello = pyshark_filtered_capture(file, TLS_CLIENT_HELLO)
+            filtered_tls_client_hello.load_packets()
+            print(f"TLS Client Hello Packets: {len(filtered_tls_client_hello)}")
+
+            filtered_tls_server_hello = pyshark_filtered_capture(file, TLS_SERVER_HELLO)
+            filtered_tls_server_hello.load_packets()
+            print(f"TLS Server Hello Packets: {len(filtered_tls_server_hello)}")
+
+            filtered_encrypted_alert = pyshark_filtered_capture(
+                file, TLS_ENCRYPTED_ALERT
+            )
+            filtered_encrypted_alert.load_packets()
+            print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
+
+
+def tcp_analysis(file: str, summary: bool = True) -> None:
+    """Analyze TCP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_tcp = pyshark_filtered_capture(file, BASIC_TCP)
+
+    if not has_packets(filtered_tcp):
+        print("No TCP packets found")
+
+    if has_packets(filtered_tcp):
+        if summary:
+            print(f"TCP Packets: {len(filtered_tcp)}")
+
+            filtered_tcp_analysis_flag = pyshark_filtered_capture(
+                file, TCP_ANALYSIS_FLAGS
+            )
+            filtered_tcp_analysis_flag.load_packets()
+            print(f"TCP Packets with Analysis Flags: {len(filtered_tcp_analysis_flag)}")
+
+            filtered_tcp_analysis_retransmissions = pyshark_filtered_capture(
+                file, TCP_RETRANSMISSION
+            )
+            filtered_tcp_analysis_retransmissions.load_packets()
+            print(
+                f"TCP Packets with Retransmissions: {len(filtered_tcp_analysis_retransmissions)}"
+            )
+
+            filtered_syn = pyshark_filtered_capture(file, TCP_SYN)
+            filtered_syn.load_packets()
+            print(f"TCP SYN Packets: {len(filtered_syn)}")
+
+            filtered_syn_ack = pyshark_filtered_capture(file, TCP_SYN_ACK)
+            filtered_syn_ack.load_packets()
+            print(f"TCP SYN ACK Packets: {len(filtered_syn_ack)}")
+
+            filtered_syn_non_zero_ack = pyshark_filtered_capture(
+                file, TCP_SYN_NON_ZERO_ACK
+            )
+            filtered_syn_non_zero_ack.load_packets()
+            print(f"TCP SYN Non Zero ACK Packets: {len(filtered_syn_non_zero_ack)}")
+
+            filtered_conn_refusal = pyshark_filtered_capture(file, TCP_CONN_REFUSAL)
+            filtered_conn_refusal.load_packets()
+            print(f"TCP Connection Refused Packets: {len(filtered_conn_refusal)}")
+
+            filtered_data_in_urgent = pyshark_filtered_capture(file, TCP_DATA_IN_URGET)
+            filtered_data_in_urgent.load_packets()
+            print(f"TCP Data in Urgent Packets: {len(filtered_data_in_urgent)}")
+
+            filtered_resets = pyshark_filtered_capture(file, TCP_RESETS)
+            filtered_resets.load_packets()
+            print(f"TCP Reset Packets: {len(filtered_resets)}")
+
+            filtered_urgent_bit_set = pyshark_filtered_capture(file, TCP_URGENT_BIT_SET)
+            filtered_urgent_bit_set.load_packets()
+            print(f"TCP Urgent Bit Set Packets: {len(filtered_urgent_bit_set)}")
+
+            filtered_window_size_scalefactor = pyshark_filtered_capture(
+                file, TCP_WINDOW_SIZE_SCALEFACTOR
+            )
+            filtered_window_size_scalefactor.load_packets()
+            print(
+                f"TCP Window Size ScaleFactor Packets: {len(filtered_window_size_scalefactor)}"
+            )
+
+            filtered_buff_full = pyshark_filtered_capture(file, TCP_BUFFER_FULL)
+            filtered_buff_full.load_packets()
+            print(f"TCP Buffer Full Packets: {len(filtered_buff_full)}")
+
+            http_analysis(file)
+            tls_analysis(file)
+
+
+def udp_analysis(file: str, summary: bool = True) -> None:
+    """Analyze UDP traffic and print findings
+
+    Args:
+        file (str): Path to capture file
+        summary (bool, optional): Summarize or detailed results. Defaults to True.
+    """
+    filtered_udp = pyshark_filtered_capture(file, BASIC_UDP)
+
+    if not has_packets(filtered_udp):
+        print("No UDP packets found")
+
+    if has_packets(filtered_udp):
+        if summary:
+            print(f"UDP Packets: {len(filtered_udp)}")
+
+            filtered_udp_home_grown = pyshark_filtered_capture(file, UDP_HOME_GROWN)
+            filtered_udp_home_grown.load_packets()
+            print(f"UDP Home Grown Packets: {len(filtered_udp_home_grown)}")
+
+            dns_analysis(file)
