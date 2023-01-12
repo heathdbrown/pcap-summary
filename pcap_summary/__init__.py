@@ -62,7 +62,7 @@ UDP_HOME_GROWN = "udp[8:3]==81:60:03"
 def filter_not_ip_addr(ip_address: str) -> str:
     """Return a filter for removing a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to ignore from display filter
 
     Returns:
@@ -75,7 +75,7 @@ def filter_not_ip_addr(ip_address: str) -> str:
 def filter_ip_addr(ip_address: str) -> str:
     """Return a filter for include a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to include from display filter
 
     Returns:
@@ -88,7 +88,7 @@ def filter_ip_addr(ip_address: str) -> str:
 def filter_tls_server_name(servername: str) -> str:
     """Return a filter for including a specific server name in a TLS packet
 
-    Param:
+    Args:
       server_name (str): Server Name to search for in a TLS packet extension
 
     Returns:
@@ -101,7 +101,7 @@ def filter_tls_server_name(servername: str) -> str:
 def filter_bad_dns_server(ip_address: str) -> str:
     """Return a filter for traffic that should not be destined for a DNS server:
 
-    Param:
+    Args:
       ip_address (str): IP Address of a DNS Server
 
     Returns:
@@ -114,7 +114,7 @@ def filter_bad_dns_server(ip_address: str) -> str:
 def filter_tcp_window_size(win_size: int) -> str:
     """Return a filter for a specific TCP Windows Size.
 
-    Param:
+    Args:
       win_size (int): TCP Windows Size to review
 
     Returns:
@@ -127,7 +127,7 @@ def filter_tcp_window_size(win_size: int) -> str:
 def filter_tcp_stream(stream: int) -> str:
     """Return a filter for filtering a specific TCP stream id
 
-    Param:
+    Args:
       stream (int): TCP Stream id to filter
 
     Returns:
@@ -140,7 +140,7 @@ def filter_tcp_stream(stream: int) -> str:
 def filter_tcp_port(port: int) -> str:
     """Return a filter for a specific TCP Port
 
-    Param:
+    Args:
       port (int): TCP Port to filter
 
     Returns:
@@ -153,7 +153,7 @@ def filter_tcp_port(port: int) -> str:
 def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
     """Return a filter for a specitific TCP Round Trip Time value.
 
-    Param:
+    Args:
       roundtrip (int): TCP Round Trip Time Value to filter.
 
     Returns:
@@ -166,7 +166,7 @@ def filter_tcp_analysis_act_rtt(roundtrip: int) -> str:
 def filter_oui(oui: str) -> str:
     """Return a filter for removing a specific iP Address
 
-    Param:
+    Args:
       ip_address (str): IP Address to ignore from display filter
 
     Returns:
@@ -179,7 +179,7 @@ def filter_oui(oui: str) -> str:
 def filter_sip_to_contains(sip_to: str) -> str:
     """Return a filter for specific SIP String
 
-    Param:
+    Args:
       sip_to (str): SIP To value that should be filtered
 
     Returns:
@@ -209,7 +209,7 @@ def valid_filename(file: str) -> bool:
 def pyshark_capture(file: str) -> pyshark.FileCapture:
     """generic wrapper on pyshark.FileCapture
 
-    Param:
+    Args:
       file (str): File path to a valid capture file format
 
     Returns:
@@ -224,7 +224,7 @@ def pyshark_capture(file: str) -> pyshark.FileCapture:
 def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapture:
     """Generic wrapper on pyshark.FileCapture, allowing for display_filter
 
-    Param:
+    Args:
       file (str): File path to a valid capture file format
 
       display_filter (str): Wireshark display filter to apply to specified file capture.
@@ -240,7 +240,7 @@ def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapt
 def print_dns_info(pkt):
     """Print DNS conversation Information from packet
 
-    Param:
+    Args:
       pkt (object): Pyshark FileCapture packet object
 
     Returns:
@@ -255,7 +255,7 @@ def print_dns_info(pkt):
 def ip_src(pkt) -> str:
     """Extract IP Source information from packet
 
-    Param:
+    Args:
       pkt (object): Pyshark FileCapture packet object
 
     Returns:
@@ -269,7 +269,7 @@ def ip_src(pkt) -> str:
 def dns_servers_from_capture(capture: pyshark.FileCapture) -> set[str]:
     """Return DNS servers that send a response from capture
 
-    Param:
+    Args:
       capture (pyshark.FileCapture): Pyshark FileCapture packet object
 
     Returns:
@@ -281,7 +281,7 @@ def dns_servers_from_capture(capture: pyshark.FileCapture) -> set[str]:
 def print_dns_server(capture: pyshark.FileCapture):
     """Print DNS Servers from capture
 
-    Param:
+    Args:
       capture (pyshark.FileCapture): Pyshark FileCapture packet object
 
     Returns:
@@ -295,7 +295,7 @@ def print_dns_server(capture: pyshark.FileCapture):
 def has_packets(capture: pyshark.FileCapture) -> bool:
     """Review if capture length is greater than zero
 
-    Param:
+    Args:
       capture (pyshark.FileCapture): Pyshark FileCapture object
 
     Return:
@@ -310,7 +310,7 @@ def has_packets(capture: pyshark.FileCapture) -> bool:
 def dns_analysis(file: str, summary: bool = True) -> None:
     """Analyze DNS traffic and print findings
 
-    Param:
+    Args:
       file (str): Path to capture file
       summary (bool): Summarize or provide details
     """
