@@ -4,6 +4,10 @@
 """Module contains common wireshark filters and methods to apply those filters.
   In addition to wrappers around common pyshark.FileCapture fucntions to simplify application of filters."""
 
+# Standard Library Imports
+import pathlib
+
+# Third-party Library Imports
 import pyshark
 
 # Wireshark display_filters
@@ -185,6 +189,23 @@ def filter_sip_to_contains(sip_to: str) -> str:
     return f"sip.To contains '{sip_to}'"
 
 
+def valid_filename(file: str) -> bool:
+    """Validate filename and return True or False
+
+    Param:
+      file (str): File path string
+
+    Returns:
+      bool:
+    """
+
+    file_extension = pathlib.Path(file).suffix
+
+    if file_extension in [".pcap", ".pcapng", ".cap"]:
+        return True
+    return False
+
+
 def pyshark_capture(file: str) -> pyshark.FileCapture:
     """generic wrapper on pyshark.FileCapture
 
@@ -195,6 +216,8 @@ def pyshark_capture(file: str) -> pyshark.FileCapture:
       pyshark.FileCapture (object): pyshark.FileCapture object returned
 
     """
+    if not valid_filename(file):
+        raise NameError
     return pyshark.FileCapture(file)
 
 
@@ -209,6 +232,8 @@ def pyshark_filtered_capture(file: str, display_filter: str) -> pyshark.FileCapt
     Returns:
       pyshark.FileCapture (object): pyshark.FileCapture object returned
     """
+    if not valid_filename(file):
+        raise NameError
     return pyshark.FileCapture(file, display_filter=display_filter)
 
 
