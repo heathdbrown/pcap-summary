@@ -4,6 +4,10 @@
 """Module contains common wireshark filters and methods to apply those filters.
   In addition to wrappers around common pyshark.FileCapture fucntions to simplify application of filters."""
 
+# Standard Library Imports
+import pathlib
+
+# Third-party Library Imports
 import pyshark
 
 # Wireshark display_filters
@@ -195,8 +199,7 @@ def valid_filename(file: str) -> bool:
       bool:
     """
 
-    dot = file.find(".")
-    file_extension = file[dot : len(file)]
+    file_extension = pathlib.Path(file).suffix
 
     if file_extension in [".pcap", ".pcapng", ".cap"]:
         return True

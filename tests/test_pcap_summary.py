@@ -6,6 +6,9 @@ testdataforvalid_filename = [
     ("test.pcapng", True),
     ("test.cap", True),
     ("test.test", False),
+    ("./test.pcap", True),
+    ("./../test.pcapng", True),
+    ("./../../test.cap", True),
 ]
 
 
