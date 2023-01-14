@@ -25,6 +25,8 @@ def pcap_summary(ctx: click.Context, file):
     cap.load_packets()
     print(f"File Name: {cap.input_filepath}")
     print(f"Total Number of Packets: {len(cap)}")
+    ps.report.tcp_analysis(file)
+    ps.report.udp_analysis(file)
 
 
 @pcap_summary.command()
@@ -32,16 +34,23 @@ def pcap_summary(ctx: click.Context, file):
 def dns(ctx):
     """Print DNS information from packet capture"""
     file = ctx.obj["file"]
-    ps.dns_analysis(file, summary=False)
+    ps.report.dns_analysis(file, summary=False)
 
 
 @pcap_summary.command()
 @click.pass_context
-def summary(ctx):
-    """Give a summary of protocols to view which area to review in the capture"""
+def tcp(ctx):
+    """Give a detail report on the tcp protocol"""
     file = ctx.obj["file"]
-    ps.tcp_analysis(file)
-    ps.udp_analysis(file)
+    ps.report.tcp_analysis(file)
+
+
+@pcap_summary.command()
+@click.pass_context
+def udp(ctx):
+    """Give a detail report on the udp protocol"""
+    file = ctx.obj["file"]
+    ps.report.udp_analysis(file)
 
 
 if __name__ == "__main__":
