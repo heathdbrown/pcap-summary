@@ -14,4 +14,4 @@ testdataforvalid_filename = [
 
 @pytest.mark.parametrize("filename, expected", testdataforvalid_filename)
 def test_valid_filename(filename, expected):
-    assert pcap_summary.valid_filename(filename) is expected
+    assert pcap_summary.report.valid_filename(filename) is expected
