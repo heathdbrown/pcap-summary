@@ -138,6 +138,7 @@ def dns_analysis(file: str, summary: bool = True) -> None:
         print("No DNS packets found")
 
     if has_packets(filtered_dns):
+<<<<<<< HEAD
 
         print(f"DNS Packets: {len(filtered_dns)}")
 
@@ -158,18 +159,43 @@ def dns_analysis(file: str, summary: bool = True) -> None:
         )
         filtered_dns_high_answer.load_packets()
         print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
+=======
+        if summary:
+            print(f"DNS Packets: {len(filtered_dns)}")
+
+            filtered_dns_ptr = pyshark_filtered_capture(file, filters.DNS_PTR)
+            filtered_dns_ptr.load_packets()
+            print(f"DNS PTR Packets: {len(filtered_dns_ptr)}")
+
+            filtered_dns_query = pyshark_filtered_capture(file, filters.DNS_QUERY)
+            filtered_dns_query.load_packets()
+            print(f"DNS Query Packets: {len(filtered_dns_query)}")
+
+            filtered_dns_response = pyshark_filtered_capture(file, filters.DNS_RESPONSE)
+            filtered_dns_response.load_packets()
+            print(f"DNS Response Packets: {len(filtered_dns_response)}")
+
+            filtered_dns_high_answer = pyshark_filtered_capture(
+                file, filters.DNS_HIGH_ANSWER
+            )
+            filtered_dns_high_answer.load_packets()
+            print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
+>>>>>>> 3f5cbac8c4184a1e8f8b58b836ab221a5f235956
 
         if not summary:
             filtered_dns.apply_on_packets(print_dns_info)
             filtered_dns_response = pyshark_filtered_capture(file, filters.DNS_RESPONSE)
             filtered_dns_response.load_packets()
             print_dns_server(filtered_dns_response)
+<<<<<<< HEAD
             for server in dns_servers_from_capture(filtered_dns_response):
                 filtered_dns_server = pyshark_filtered_capture(
                     file, filters.filter_bad_dns_server(server)
                 )
                 if has_packets(filtered_dns_server):
                     print(f"DNS Server has non DNS traffic!!! {server}")
+=======
+>>>>>>> 3f5cbac8c4184a1e8f8b58b836ab221a5f235956
 
 
 def http_analysis(file: str, summary: bool = True) -> None:
