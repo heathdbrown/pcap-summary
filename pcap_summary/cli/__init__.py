@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 """ CLI to analyze packet captures via pyshark and produce summaries with common filters """
+import logging
+
 import click
 import pyshark
 import pcap_summary as ps
