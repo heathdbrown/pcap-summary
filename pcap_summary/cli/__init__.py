@@ -18,6 +18,7 @@ from ..__about__ import __version__
 @click.version_option(version=__version__, prog_name="pcap-summary")
 @click.pass_context
 @click.argument("file", required=True)
+@click.option("-v", "--verbose", count=True)
 def pcap_summary(ctx: click.Context, file):
     """Print name and total number of packets for capture file"""
     # click.echo(file)
@@ -55,4 +56,7 @@ def udp(ctx):
 
 if __name__ == "__main__":
     # click allows for passing a context object, we need to pass an object that is a blank dict
+    logging.basicConfig(
+        format="%(asctime)-15s %(levelname)s %(message)s", level=log_level.upper()
+    )
     pcap_summary(obj={})
