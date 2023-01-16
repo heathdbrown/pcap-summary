@@ -4,6 +4,10 @@
 """ CLI to analyze packet captures via pyshark and produce summaries with common filters """
 import logging
 
+logger = logging.getLogger(__name__)
+# stream_handler = logging.StreamHandler()
+# logger.addHandler(stream_handler)
+
 import click
 import pyshark
 import pcap_summary as ps
@@ -19,15 +23,27 @@ from ..__about__ import __version__
 @click.pass_context
 @click.argument("file", required=True)
 @click.option("-v", "--verbose", count=True)
-def pcap_summary(ctx: click.Context, file):
+def pcap_summary(ctx: click.Context, file, verbose):
     """Print name and total number of packets for capture file"""
     # click.echo(file)
     ctx.ensure_object(dict)
     ctx.obj["file"] = file
     cap = pyshark.FileCapture(file)
     cap.load_packets()
-    print(f"File Name: {cap.input_filepath}")
-    print(f"Total Number of Packets: {len(cap)}")
+
+    if not verbose:
+        log_level = "info"
+    if verbose == 1:
+        log_level = "info"
+    if verbose >= 2:
+        log_level = "debug"
+    # logger.setLevel(log_level.upper())
+    logging.basicConfig(
+        format="%(asctime)-15s:%(levelname)s:%(name)s:%(message)s",
+        level=log_level.upper(),
+    )
+    logger.info(f"File Name: {cap.input_filepath}")
+    logger.info(f"Total Number of Packets: {len(cap)}")
 
 
 @pcap_summary.command()
@@ -56,7 +72,4 @@ def udp(ctx):
 
 if __name__ == "__main__":
     # click allows for passing a context object, we need to pass an object that is a blank dict
-    logging.basicConfig(
-        format="%(asctime)-15s %(levelname)s %(message)s", level=log_level.upper()
-    )
     pcap_summary(obj={})
