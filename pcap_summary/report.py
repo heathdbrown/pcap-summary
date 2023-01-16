@@ -159,17 +159,16 @@ def dns_analysis(file: str, summary: bool = True) -> None:
         filtered_dns_high_answer.load_packets()
         print(f"DNS High Answer Packets: {len(filtered_dns_high_answer)}")
 
-        if not summary:
-            filtered_dns.apply_on_packets(print_dns_info)
-            filtered_dns_response = pyshark_filtered_capture(file, filters.DNS_RESPONSE)
-            filtered_dns_response.load_packets()
-            print_dns_server(filtered_dns_response)
-            for server in dns_servers_from_capture(filtered_dns_response):
-                filtered_dns_server = pyshark_filtered_capture(
-                    file, filters.filter_bad_dns_server(server)
-                )
-                if has_packets(filtered_dns_server):
-                    print(f"DNS Server has non DNS traffic!!! {server}")
+        filtered_dns.apply_on_packets(print_dns_info)
+        filtered_dns_response = pyshark_filtered_capture(file, filters.DNS_RESPONSE)
+        filtered_dns_response.load_packets()
+        print_dns_server(filtered_dns_response)
+        for server in dns_servers_from_capture(filtered_dns_response):
+            filtered_dns_server = pyshark_filtered_capture(
+                file, filters.filter_bad_dns_server(server)
+            )
+            if has_packets(filtered_dns_server):
+                print(f"DNS Server has non DNS traffic!!! {server}")
 
 
 def http_analysis(file: str, summary: bool = True) -> None:
@@ -185,46 +184,41 @@ def http_analysis(file: str, summary: bool = True) -> None:
         print("No HTTP packets found")
 
     if has_packets(filtered_http):
-        if summary:
-            print(f"HTTP Packets: {len(filtered_http)}")
+        print(f"HTTP Packets: {len(filtered_http)}")
 
-            filtered_http_put_post = pyshark_filtered_capture(
-                file, filters.HTTP_PUT_POST
-            )
-            filtered_http_put_post.load_packets()
-            print(f"HTTP Packets with Put or POST: {len(filtered_http_put_post)}")
+        filtered_http_put_post = pyshark_filtered_capture(file, filters.HTTP_PUT_POST)
+        filtered_http_put_post.load_packets()
+        print(f"HTTP Packets with Put or POST: {len(filtered_http_put_post)}")
 
-            filtered_file_extension = pyshark_filtered_capture(
-                file, filters.HTTP_FILE_EXTENSION
-            )
-            filtered_file_extension.load_packets()
-            print(
-                f"HTTP Packets with exe, zip extensions: {len(filtered_file_extension)}"
-            )
+        filtered_file_extension = pyshark_filtered_capture(
+            file, filters.HTTP_FILE_EXTENSION
+        )
+        filtered_file_extension.load_packets()
+        print(f"HTTP Packets with exe, zip extensions: {len(filtered_file_extension)}")
 
-            filtered_content_type = pyshark_filtered_capture(
-                file, filters.HTTP_CONTENT_TYPE
-            )
-            filtered_content_type.load_packets()
-            print(f"HTTP Packets with content type: {len(filtered_content_type)}")
+        filtered_content_type = pyshark_filtered_capture(
+            file, filters.HTTP_CONTENT_TYPE
+        )
+        filtered_content_type.load_packets()
+        print(f"HTTP Packets with content type: {len(filtered_content_type)}")
 
-            filtered_redirects = pyshark_filtered_capture(file, filters.HTTP_REDIRECTS)
-            filtered_redirects.load_packets()
-            print(f"HTTP Packets with redirects: {len(filtered_redirects)}")
+        filtered_redirects = pyshark_filtered_capture(file, filters.HTTP_REDIRECTS)
+        filtered_redirects.load_packets()
+        print(f"HTTP Packets with redirects: {len(filtered_redirects)}")
 
-            filtered_http_get_not_on_80 = pyshark_filtered_capture(
-                file, filters.HTTP_GET_NOT_ON_80
-            )
-            filtered_http_get_not_on_80.load_packets()
-            print(
-                f"HTTP Packets with non standard ports: {len(filtered_http_get_not_on_80)}"
-            )
+        filtered_http_get_not_on_80 = pyshark_filtered_capture(
+            file, filters.HTTP_GET_NOT_ON_80
+        )
+        filtered_http_get_not_on_80.load_packets()
+        print(
+            f"HTTP Packets with non standard ports: {len(filtered_http_get_not_on_80)}"
+        )
 
-            filtered_nmap_user_agent = pyshark_filtered_capture(
-                file, filters.NMAP_USER_AGENT
-            )
-            filtered_nmap_user_agent.load_packets()
-            print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
+        filtered_nmap_user_agent = pyshark_filtered_capture(
+            file, filters.NMAP_USER_AGENT
+        )
+        filtered_nmap_user_agent.load_packets()
+        print(f"HTTP Packets with NMAP User Agent: {len(filtered_nmap_user_agent)}")
 
 
 def tls_analysis(file: str, summary: bool = True) -> None:
@@ -240,32 +234,31 @@ def tls_analysis(file: str, summary: bool = True) -> None:
         print("No TLS packets found")
 
     if has_packets(filtered_tls):
-        if summary:
-            print(f"TLS Packets: {len(filtered_tls)}")
+        print(f"TLS Packets: {len(filtered_tls)}")
 
-            filtered_tls_handshake = pyshark_filtered_capture(
-                file, filters.BASIC_TLS_HANDSHAKE
-            )
-            filtered_tls_handshake.load_packets()
-            print(f"TLS Handshake Packets: {len(filtered_tls_handshake)}")
+        filtered_tls_handshake = pyshark_filtered_capture(
+            file, filters.BASIC_TLS_HANDSHAKE
+        )
+        filtered_tls_handshake.load_packets()
+        print(f"TLS Handshake Packets: {len(filtered_tls_handshake)}")
 
-            filtered_tls_client_hello = pyshark_filtered_capture(
-                file, filters.TLS_CLIENT_HELLO
-            )
-            filtered_tls_client_hello.load_packets()
-            print(f"TLS Client Hello Packets: {len(filtered_tls_client_hello)}")
+        filtered_tls_client_hello = pyshark_filtered_capture(
+            file, filters.TLS_CLIENT_HELLO
+        )
+        filtered_tls_client_hello.load_packets()
+        print(f"TLS Client Hello Packets: {len(filtered_tls_client_hello)}")
 
-            filtered_tls_server_hello = pyshark_filtered_capture(
-                file, filters.TLS_SERVER_HELLO
-            )
-            filtered_tls_server_hello.load_packets()
-            print(f"TLS Server Hello Packets: {len(filtered_tls_server_hello)}")
+        filtered_tls_server_hello = pyshark_filtered_capture(
+            file, filters.TLS_SERVER_HELLO
+        )
+        filtered_tls_server_hello.load_packets()
+        print(f"TLS Server Hello Packets: {len(filtered_tls_server_hello)}")
 
-            filtered_encrypted_alert = pyshark_filtered_capture(
-                file, filters.TLS_ENCRYPTED_ALERT
-            )
-            filtered_encrypted_alert.load_packets()
-            print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
+        filtered_encrypted_alert = pyshark_filtered_capture(
+            file, filters.TLS_ENCRYPTED_ALERT
+        )
+        filtered_encrypted_alert.load_packets()
+        print(f"TLS Encrypted Alert Packets: {len(filtered_encrypted_alert)}")
 
 
 def tcp_analysis(file: str, summary: bool = True) -> None:
@@ -281,73 +274,70 @@ def tcp_analysis(file: str, summary: bool = True) -> None:
         print("No TCP packets found")
 
     if has_packets(filtered_tcp):
-        if summary:
-            print(f"TCP Packets: {len(filtered_tcp)}")
+        print(f"TCP Packets: {len(filtered_tcp)}")
 
-            filtered_tcp_analysis_flag = pyshark_filtered_capture(
-                file, filters.TCP_ANALYSIS_FLAGS
-            )
-            filtered_tcp_analysis_flag.load_packets()
-            print(f"TCP Packets with Analysis Flags: {len(filtered_tcp_analysis_flag)}")
+        filtered_tcp_analysis_flag = pyshark_filtered_capture(
+            file, filters.TCP_ANALYSIS_FLAGS
+        )
+        filtered_tcp_analysis_flag.load_packets()
+        print(f"TCP Packets with Analysis Flags: {len(filtered_tcp_analysis_flag)}")
 
-            filtered_tcp_analysis_retransmissions = pyshark_filtered_capture(
-                file, filters.TCP_RETRANSMISSION
-            )
-            filtered_tcp_analysis_retransmissions.load_packets()
-            print(
-                f"TCP Packets with Retransmissions: {len(filtered_tcp_analysis_retransmissions)}"
-            )
+        filtered_tcp_analysis_retransmissions = pyshark_filtered_capture(
+            file, filters.TCP_RETRANSMISSION
+        )
+        filtered_tcp_analysis_retransmissions.load_packets()
+        print(
+            f"TCP Packets with Retransmissions: {len(filtered_tcp_analysis_retransmissions)}"
+        )
 
-            filtered_syn = pyshark_filtered_capture(file, filters.TCP_SYN)
-            filtered_syn.load_packets()
-            print(f"TCP SYN Packets: {len(filtered_syn)}")
+        filtered_syn = pyshark_filtered_capture(file, filters.TCP_SYN)
+        filtered_syn.load_packets()
+        print(f"TCP SYN Packets: {len(filtered_syn)}")
 
-            filtered_syn_ack = pyshark_filtered_capture(file, filters.TCP_SYN_ACK)
-            filtered_syn_ack.load_packets()
-            print(f"TCP SYN ACK Packets: {len(filtered_syn_ack)}")
+        filtered_syn_ack = pyshark_filtered_capture(file, filters.TCP_SYN_ACK)
+        filtered_syn_ack.load_packets()
+        print(f"TCP SYN ACK Packets: {len(filtered_syn_ack)}")
 
-            filtered_syn_non_zero_ack = pyshark_filtered_capture(
-                file, filters.TCP_SYN_NON_ZERO_ACK
-            )
-            filtered_syn_non_zero_ack.load_packets()
-            print(f"TCP SYN Non Zero ACK Packets: {len(filtered_syn_non_zero_ack)}")
+        filtered_syn_non_zero_ack = pyshark_filtered_capture(
+            file, filters.TCP_SYN_NON_ZERO_ACK
+        )
+        filtered_syn_non_zero_ack.load_packets()
+        print(f"TCP SYN Non Zero ACK Packets: {len(filtered_syn_non_zero_ack)}")
 
-            filtered_conn_refusal = pyshark_filtered_capture(
-                file, filters.TCP_CONN_REFUSAL
-            )
-            filtered_conn_refusal.load_packets()
-            print(f"TCP Connection Refused Packets: {len(filtered_conn_refusal)}")
+        filtered_conn_refusal = pyshark_filtered_capture(file, filters.TCP_CONN_REFUSAL)
+        filtered_conn_refusal.load_packets()
+        print(f"TCP Connection Refused Packets: {len(filtered_conn_refusal)}")
 
-            filtered_data_in_urgent = pyshark_filtered_capture(
-                file, filters.TCP_DATA_IN_URGET
-            )
-            filtered_data_in_urgent.load_packets()
-            print(f"TCP Data in Urgent Packets: {len(filtered_data_in_urgent)}")
+        filtered_data_in_urgent = pyshark_filtered_capture(
+            file, filters.TCP_DATA_IN_URGET
+        )
+        filtered_data_in_urgent.load_packets()
+        print(f"TCP Data in Urgent Packets: {len(filtered_data_in_urgent)}")
 
-            filtered_resets = pyshark_filtered_capture(file, filters.TCP_RESETS)
-            filtered_resets.load_packets()
-            print(f"TCP Reset Packets: {len(filtered_resets)}")
+        filtered_resets = pyshark_filtered_capture(file, filters.TCP_RESETS)
+        filtered_resets.load_packets()
+        print(f"TCP Reset Packets: {len(filtered_resets)}")
 
-            filtered_urgent_bit_set = pyshark_filtered_capture(
-                file, filters.TCP_URGENT_BIT_SET
-            )
-            filtered_urgent_bit_set.load_packets()
-            print(f"TCP Urgent Bit Set Packets: {len(filtered_urgent_bit_set)}")
+        filtered_urgent_bit_set = pyshark_filtered_capture(
+            file, filters.TCP_URGENT_BIT_SET
+        )
+        filtered_urgent_bit_set.load_packets()
+        print(f"TCP Urgent Bit Set Packets: {len(filtered_urgent_bit_set)}")
 
-            filtered_window_size_scalefactor = pyshark_filtered_capture(
-                file, filters.TCP_WINDOW_SIZE_SCALEFACTOR
-            )
-            filtered_window_size_scalefactor.load_packets()
-            print(
-                f"TCP Window Size ScaleFactor Packets: {len(filtered_window_size_scalefactor)}"
-            )
+        filtered_window_size_scalefactor = pyshark_filtered_capture(
+            file, filters.TCP_WINDOW_SIZE_SCALEFACTOR
+        )
+        filtered_window_size_scalefactor.load_packets()
+        print(
+            f"TCP Window Size ScaleFactor Packets: {len(filtered_window_size_scalefactor)}"
+        )
 
-            filtered_buff_full = pyshark_filtered_capture(file, filters.TCP_BUFFER_FULL)
-            filtered_buff_full.load_packets()
-            print(f"TCP Buffer Full Packets: {len(filtered_buff_full)}")
+        filtered_buff_full = pyshark_filtered_capture(file, filters.TCP_BUFFER_FULL)
+        filtered_buff_full.load_packets()
+        print(f"TCP Buffer Full Packets: {len(filtered_buff_full)}")
 
-            http_analysis(file)
-            tls_analysis(file)
+        http_analysis(file)
+        tls_analysis(file)
 
 
 def udp_analysis(file: str, summary: bool = True) -> None:
@@ -363,13 +353,10 @@ def udp_analysis(file: str, summary: bool = True) -> None:
         print("No UDP packets found")
 
     if has_packets(filtered_udp):
-        if summary:
-            print(f"UDP Packets: {len(filtered_udp)}")
+        print(f"UDP Packets: {len(filtered_udp)}")
 
-            filtered_udp_home_grown = pyshark_filtered_capture(
-                file, filters.UDP_HOME_GROWN
-            )
-            filtered_udp_home_grown.load_packets()
-            print(f"UDP Home Grown Packets: {len(filtered_udp_home_grown)}")
+        filtered_udp_home_grown = pyshark_filtered_capture(file, filters.UDP_HOME_GROWN)
+        filtered_udp_home_grown.load_packets()
+        print(f"UDP Home Grown Packets: {len(filtered_udp_home_grown)}")
 
-            dns_analysis(file)
+        dns_analysis(file)
